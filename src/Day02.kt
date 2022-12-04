@@ -47,15 +47,18 @@ fun main() {
 
     fun part1(input: List<String>): Int {
         var totalPoints = 0
-        for (battle in input) {
-            val moveList = battle.lowercase().split(" ")
-            val enemyMove = moveList[0]
-            val playerMove = moveList[1]
-            totalPoints +=
-                fightResultsMap[enemyMove + playerMove].run {
-                    winningsMap[this]!! + playerMoveToPoints[playerMove]!!
+        
+        input.forEach { battle ->
+            totalPoints += battle
+                .lowercase()
+                .replace(" ", "")
+                .partition { "abc".contains(it) }
+                .run {
+                    val move = this.second
+                    fightResultsMap[this.first + move].run {
+                        winningsMap[this]!! + playerMoveToPoints[move]!!
+                    }
                 }
-
         }
         return totalPoints
     }
@@ -65,13 +68,11 @@ fun main() {
         for (battle in input) {
             val moveList = battle.lowercase().split(" ")
             val enemyMove = moveList[0]
-            val playerMove = matchOutcomeToPlayerMoveMap[moveList[0]+moveList[1]]
-
+            val playerMove = matchOutcomeToPlayerMoveMap[moveList[0] + moveList[1]]
             totalPoints +=
                 fightResultsMap[enemyMove + playerMove].run {
                     winningsMap[this]!! + playerMoveToPoints[playerMove]!!
                 }
-
         }
         return totalPoints
     }
